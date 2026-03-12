@@ -1,0 +1,6 @@
+@CapoBooking_HostAddress = http://localhost:5063
+
+GET {{CapoBooking_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
