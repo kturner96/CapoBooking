@@ -17,6 +17,14 @@ public class BookingsController : ControllerBase
         _db = db;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllBookings()
+    {
+        var bookings = await _db.Bookings.ToListAsync();
+        return Ok(bookings);
+        
+    }
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Booking>> GetBooking(int id)
     {
@@ -37,6 +45,33 @@ public class BookingsController : ControllerBase
     {
         var service = await _db.Services.FindAsync(request.ServiceId);
 
+        if (service == null)
+        {
+            return NotFound("Service not found.");
+        }
+        
+        if (request.StartTime == default)
+        {
+            return BadRequest("Start time is required.");
+        }
+
+        if (request.StartTime < DateTime.UtcNow)
+        {
+            return BadRequest("Booking must be in the future.");
+        }
+
+        var newStart = request.StartTime;
+        var newEnd = request.StartTime.AddMinutes(service.DurationMinutes);
+
+        var overlappingBookingExists = await _db.Bookings.AnyAsync(b =>
+            b.Status != BookingStatus.Cancelled &&
+            newStart < b.EndTime &&
+            newEnd < b.StartTime);
+
+        if (overlappingBookingExists)
+            return BadRequest("Booking already exists during this time.");
+        
+
         var booking = new Booking()
         {
             ServiceId = request.ServiceId,
@@ -56,8 +91,6 @@ public class BookingsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Booking>> DeleteBooking(int id)
     {
-        try
-        {
             var bookingToDelete = await _db.Bookings.FindAsync(id);
 
             if (bookingToDelete == null)
@@ -69,12 +102,20 @@ public class BookingsController : ControllerBase
             await _db.SaveChangesAsync();
 
             return NoContent();
-        }
+    }
+    
+    [HttpPatch("{id:int}/status")]
+    public async Task<ActionResult<Booking>> UpdateBookingStatus(int id, UpdateBookingStatusRequest request)
+    {
+        var booking = await _db.Bookings.FindAsync(id);
 
-        catch (Exception)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error deleting Booking.");
-        }
+        if (booking == null)
+            return NotFound();
+
+        booking.Status = request.Status;
+
+        await _db.SaveChangesAsync();
+        return Ok(booking);
+
     }
 }

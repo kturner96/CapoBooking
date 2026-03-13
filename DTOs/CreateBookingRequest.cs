@@ -4,7 +4,7 @@ namespace CapoBooking.DTOs;
 
 public class CreateBookingRequest
 {
-    [Required]
+    [Range(1, int.MaxValue)]
     public int ServiceId { get; set; }
     [Required]
     [MaxLength(100)]
@@ -14,8 +14,6 @@ public class CreateBookingRequest
     public string ClientEmail { get; set; } = string.Empty;
 
     [Required] [Phone] public string ClientMobile { get; set; } = string.Empty;
-    [Required]
-    [DataType(DataType.DateTime)]
     public DateTime StartTime { get; set; }
     
 }
