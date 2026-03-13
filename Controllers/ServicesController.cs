@@ -50,7 +50,8 @@ public class ServicesController : ControllerBase
         {
             Name = request.Name,
             DurationMinutes = request.DurationMinutes,
-            Price = request.Price
+            Price = request.Price,
+            Description = request.Description
         };
 
         _db.Services.Add(service);

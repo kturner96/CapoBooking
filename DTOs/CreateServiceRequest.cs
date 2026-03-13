@@ -12,4 +12,7 @@ public class CreateServiceRequest
     [Required]
     public decimal Price { get; set; }
     
+    [MaxLength(500)]
+    public string Description { get; set; } = string.Empty;
+
 }

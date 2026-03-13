@@ -28,7 +28,6 @@ public class BookingsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Booking>> GetBooking(int id)
     {
-        
         var booking = await _db.Bookings.FindAsync(id);
 
         if (booking == null)
@@ -66,7 +65,7 @@ public class BookingsController : ControllerBase
         var overlappingBookingExists = await _db.Bookings.AnyAsync(b =>
             b.Status != BookingStatus.Cancelled &&
             newStart < b.EndTime &&
-            newEnd < b.StartTime);
+            newEnd > b.StartTime);
 
         if (overlappingBookingExists)
             return BadRequest("Booking already exists during this time.");
