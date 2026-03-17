@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using CapoBooking.Data;
+using CapoBooking.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
+builder.Services.AddScoped<JwtTokenService>();
 
 builder.Services.AddCors(options =>
 {
