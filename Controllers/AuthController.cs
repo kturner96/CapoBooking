@@ -4,6 +4,7 @@ using CapoBooking.Data;
 using CapoBooking.Domain;
 using CapoBooking.DTOs;
 using CapoBooking.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,14 @@ public class AuthController : ControllerBase
         _jwtTokenService = jwtTokenService;
     }
 
+    [Authorize]
+    [HttpGet]
+    public IActionResult Get()
+    {
+        return Ok("You are authorized.");
+    }
+
+     
      [HttpPost("login")]
      public async Task<ActionResult> Login(LoginRequestDto request)
      {
@@ -48,7 +57,7 @@ public class AuthController : ControllerBase
           var compareResult = CryptographicOperations.FixedTimeEquals(passwordHash, Convert.FromBase64String(user.PasswordHash));
           
           if (!compareResult)
-              return Unauthorized("Invalid credentials."); // change to return JWT token 
+              return Unauthorized("Invalid credentials.");
 
           var token = _jwtTokenService.GenerateToken(user);
 
@@ -78,6 +87,7 @@ public class AuthController : ControllerBase
              PasswordSalt = salt,
              CreatedAt = DateTime.UtcNow,
              IsActive = true,
+             Role = "Admin"
          };
 
          _db.Users.Add(user);
