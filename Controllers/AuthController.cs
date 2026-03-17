@@ -14,10 +14,12 @@ namespace CapoBooking.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly JwtTokenService _jwtTokenService;
 
-    public AuthController(AppDbContext db)
+    public AuthController(AppDbContext db, JwtTokenService jwtTokenService)
     {
         _db = db;
+        _jwtTokenService = jwtTokenService;
     }
 
      [HttpPost("login")]
@@ -45,10 +47,12 @@ public class AuthController : ControllerBase
          
           var compareResult = CryptographicOperations.FixedTimeEquals(passwordHash, Convert.FromBase64String(user.PasswordHash));
           
-          if (compareResult)
-              return Ok("Login Successful."); // change to return JWT token 
+          if (!compareResult)
+              return Unauthorized("Invalid credentials."); // change to return JWT token 
 
-          return Unauthorized("Invalid credentials.");
+          var token = _jwtTokenService.GenerateToken(user);
+
+          return Ok(new { token });
      }
 
      [HttpPost("register")]
