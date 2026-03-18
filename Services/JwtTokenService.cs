@@ -25,7 +25,7 @@ public class JwtTokenService
         {
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, "Admin")
+            new Claim(ClaimTypes.Role, "Admin"),
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!));
@@ -37,7 +37,7 @@ public class JwtTokenService
             claims: claims,
             expires: DateTime.UtcNow.AddHours(3),
             signingCredentials: credentials
-            );
+        );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

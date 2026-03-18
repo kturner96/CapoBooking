@@ -12,4 +12,10 @@ public class Booking
     public BookingStatus Status { get; set; } = BookingStatus.Pending;
 }
 
-public enum BookingStatus {Pending, Confirmed, Completed, Cancelled}
+public enum BookingStatus
+{
+    Pending,
+    Confirmed,
+    Completed,
+    Cancelled,
+}

@@ -15,15 +15,14 @@ namespace CapoBooking.Migrations
                 table: "Services",
                 type: "text",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Description",
-                table: "Services");
+            migrationBuilder.DropColumn(name: "Description", table: "Services");
         }
     }
 }

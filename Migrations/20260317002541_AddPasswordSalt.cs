@@ -15,15 +15,14 @@ namespace CapoBooking.Migrations
                 table: "Users",
                 type: "text",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "PasswordSalt",
-                table: "Users");
+            migrationBuilder.DropColumn(name: "PasswordSalt", table: "Users");
         }
     }
 }

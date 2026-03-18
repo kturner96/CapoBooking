@@ -11,7 +11,7 @@ namespace CapoBooking.Controllers;
 public class ServicesController : ControllerBase
 {
     private readonly AppDbContext _db;
-    
+
     public ServicesController(AppDbContext db)
     {
         _db = db;
@@ -51,7 +51,7 @@ public class ServicesController : ControllerBase
             Name = request.Name,
             DurationMinutes = request.DurationMinutes,
             Price = request.Price,
-            Description = request.Description
+            Description = request.Description,
         };
 
         _db.Services.Add(service);
@@ -63,7 +63,6 @@ public class ServicesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Service>> DeleteService(int id)
     {
-        
         var service = await _db.Services.FindAsync(id);
 
         if (service == null)
@@ -74,5 +73,4 @@ public class ServicesController : ControllerBase
 
         return Ok();
     }
-    
 }

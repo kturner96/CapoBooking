@@ -16,6 +16,4 @@ public class RegisterRequestDto
     [Required]
     [MaxLength(64)]
     public string FullName { get; set; } = string.Empty;
-    
-
 }

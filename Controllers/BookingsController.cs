@@ -22,7 +22,6 @@ public class BookingsController : ControllerBase
     {
         var bookings = await _db.Bookings.ToListAsync();
         return Ok(bookings);
-        
     }
 
     [HttpGet("{id:int}")]
@@ -34,9 +33,8 @@ public class BookingsController : ControllerBase
         {
             return NotFound();
         }
-           
-        return Ok(booking);
 
+        return Ok(booking);
     }
 
     [HttpPost]
@@ -48,7 +46,7 @@ public class BookingsController : ControllerBase
         {
             return NotFound("Service not found.");
         }
-        
+
         if (request.StartTime == default)
         {
             return BadRequest("Start time is required.");
@@ -63,13 +61,11 @@ public class BookingsController : ControllerBase
         var newEnd = request.StartTime.AddMinutes(service.DurationMinutes);
 
         var overlappingBookingExists = await _db.Bookings.AnyAsync(b =>
-            b.Status != BookingStatus.Cancelled &&
-            newStart < b.EndTime &&
-            newEnd > b.StartTime);
+            b.Status != BookingStatus.Cancelled && newStart < b.EndTime && newEnd > b.StartTime
+        );
 
         if (overlappingBookingExists)
             return BadRequest("Booking already exists during this time.");
-        
 
         var booking = new Booking()
         {
@@ -78,7 +74,7 @@ public class BookingsController : ControllerBase
             ClientEmail = request.ClientEmail,
             ClientMobile = request.ClientMobile,
             StartTime = request.StartTime,
-            EndTime = request.StartTime.AddMinutes(service.DurationMinutes)
+            EndTime = request.StartTime.AddMinutes(service.DurationMinutes),
         };
 
         _db.Bookings.Add(booking);
@@ -90,21 +86,24 @@ public class BookingsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Booking>> DeleteBooking(int id)
     {
-            var bookingToDelete = await _db.Bookings.FindAsync(id);
+        var bookingToDelete = await _db.Bookings.FindAsync(id);
 
-            if (bookingToDelete == null)
-            {
-                return NotFound($"Booking with id {id} not found.");
-            }
+        if (bookingToDelete == null)
+        {
+            return NotFound($"Booking with id {id} not found.");
+        }
 
-            _db.Bookings.Remove(bookingToDelete);
-            await _db.SaveChangesAsync();
+        _db.Bookings.Remove(bookingToDelete);
+        await _db.SaveChangesAsync();
 
-            return NoContent();
+        return NoContent();
     }
-    
+
     [HttpPatch("{id:int}/status")]
-    public async Task<ActionResult<Booking>> UpdateBookingStatus(int id, UpdateBookingStatusRequest request)
+    public async Task<ActionResult<Booking>> UpdateBookingStatus(
+        int id,
+        UpdateBookingStatusRequest request
+    )
     {
         var booking = await _db.Bookings.FindAsync(id);
 
@@ -115,6 +114,5 @@ public class BookingsController : ControllerBase
 
         await _db.SaveChangesAsync();
         return Ok(booking);
-
     }
 }
