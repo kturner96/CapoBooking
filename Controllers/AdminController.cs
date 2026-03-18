@@ -12,12 +12,12 @@ namespace CapoBooking.Controllers;
 
 [ApiController]
 [Route("api/admin")]
-public class AuthController : ControllerBase
+public class AdminController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly JwtTokenService _jwtTokenService;
 
-    public AuthController(AppDbContext db, JwtTokenService jwtTokenService)
+    public AdminController(AppDbContext db, JwtTokenService jwtTokenService)
     {
         _db = db;
         _jwtTokenService = jwtTokenService;
